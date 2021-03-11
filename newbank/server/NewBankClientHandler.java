@@ -37,8 +37,18 @@ public class NewBankClientHandler extends Thread{
 				while(true) {
 					String request = in.readLine();
 					System.out.println("Request from " + customer.getKey());
-					String responce = bank.processRequest(customer, request);
-					out.println(responce);
+					if (request.equals("NEWACCOUNT")){
+						out.println("Account Name:");
+						String accountName = in.readLine();
+						out.println("Opening Balance");
+						double balance = Double.parseDouble(in.readLine());
+						String responce = bank.processRequest(customer, request, accountName, balance);
+						out.println(responce);
+					}
+					else{
+						String responce = bank.processRequest(customer, request);
+						out.println(responce);
+					}
 				}
 			}
 			else {
