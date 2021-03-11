@@ -3,7 +3,7 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import jave.util.Scanner;
+import java.util.Scanner;
 
 public class NewBank {
 
