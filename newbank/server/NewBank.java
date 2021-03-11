@@ -1,5 +1,7 @@
 package newbank.server;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 public class NewBank {
@@ -47,9 +49,25 @@ public class NewBank {
 		}
 		return "FAIL";
 	}
+
+	// commands from the NewBank customer are processed in this method
+	public synchronized String processRequest(CustomerID customer, String request, String accountName, double balance) {
+		if(customers.containsKey(customer.getKey())) {
+			switch(request) {
+				case "NEWACCOUNT" : return addAccount(customer, accountName, balance);
+				default : return "FAIL";
+			}
+		}
+		return "FAIL";
+	}
 	
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
+	}
+
+	private String addAccount(CustomerID customer, String accountName, double balance) {
+		customers.get(customer.getKey()).addAccount(new Account(accountName,balance));
+	    return "SUCCESS";
 	}
 
 }
