@@ -3,7 +3,6 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class NewBank {
 
@@ -80,25 +79,7 @@ public class NewBank {
 		customers.get(customer.getKey()).addAccount(new Account(accountName, balance));
 		return "SUCCESS";
 	}
-	
-	private String payMoney(CustomerID customer, double amount){
 
-		System.out.print("Please enter the amount you intend to pay");
-		Scanner amt= new Scanner (System.in);
-		double payment = amt.nextDouble();
-
-		if (customers.containsValue(customer)) {
-			if (customer.getCurrentBalance() >= payment){
-				System.out.print ("Please make your payment");
-				double newBalance = customer.getCurrentBalance() - payment;
-				customer.getCurrentBalance() = newBalance;
-				return "SUCCESS";
-			}
-			else	{
-				System.out.print ("You do not have enough money in your account for this transaction");
-
-			}
-		}
-		return "FAIL";
+	//Testing git branches and git merge
 
 }
