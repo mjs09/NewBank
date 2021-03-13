@@ -22,6 +22,10 @@ public class Account {
 		return this.currentBalance;
 	}
 
+	public String getAccountName() {
+		return this.accountName;
+	}
+
 	// Shows the account currentBalance
 	public String toString() {
 		return (accountName + ": " + currentBalance);
