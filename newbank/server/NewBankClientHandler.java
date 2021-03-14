@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -43,6 +44,19 @@ public class NewBankClientHandler extends Thread{
 						out.println("Opening Balance");
 						double balance = Double.parseDouble(in.readLine());
 						String responce = bank.processRequest(customer, request, accountName, balance);
+						out.println(responce);
+					}
+					else if (request.equals("MOVE")) {
+						Scanner scan = new Scanner(System.in);
+						out.println("Amount to move:");
+						//double amount = scan.nextDouble();
+						String amountString = in.readLine();
+						double amount = Double.parseDouble(amountString);
+						out.println("From account:");
+						String source = in.readLine();
+						out.println("To account");
+						String target = in.readLine();
+						String responce = bank.processRequest(customer, request, amount, source, target);
 						out.println(responce);
 					}
 					else{

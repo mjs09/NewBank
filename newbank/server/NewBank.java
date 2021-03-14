@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
@@ -46,6 +47,19 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
+	public synchronized String processRequest(CustomerID customer, String request, double amount, String source, String target) {
+		if (customers.containsKey(customer.getKey())) {
+			switch (request) {
+				case "MOVE":
+					return moveMoney(customer, amount, source, target);
+				default:
+					return "FAIL";
+			}
+		}
+		return "FAIL";
+	}
+
+	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
@@ -80,6 +94,33 @@ public class NewBank {
 		return "SUCCESS";
 	}
 
-	//Testing git branches and git merge
+	private String moveMoney(CustomerID customer, double amount, String source, String target) {
+		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
+		for (Account a : accountsList) {
+			if (a.getAccountName().equals(source)) {
+				if (a.getCurrentBalance() < amount) {
+					return "FAIL: Insufficient funds in source account";
+				}
+				else {
+					double currentBalance = a.getCurrentBalance();
+					double newBalance = currentBalance - amount;
+					a.setCurrentBalance(newBalance);
+					for (Account a2 : accountsList) {
+						if (a2.getAccountName().equals(target)) {
+							double currentBalance2 = a2.getCurrentBalance();
+							double newBalance2 = currentBalance2 + amount;
+							a2.setCurrentBalance(newBalance2);
+						}
+					}
+					return "SUCCESS";
+				}
+			}
+		}
+
+
+		return "FAIL";
+	}
+
+
 
 }
