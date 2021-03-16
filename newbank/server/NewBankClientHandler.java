@@ -58,7 +58,25 @@ public class NewBankClientHandler extends Thread{
 						String target = in.readLine();
 						String responce = bank.processRequest(customer, request, amount, source, target);
 						out.println(responce);
+						
 					}
+					
+					else if (request.equals("PAY")) {
+						Scanner input = new Scanner(System.in);
+						out.println("Amount to pay: ");
+						String moneyString = in.readLine();
+						double value = Double.parseDouble(moneyString);
+
+						out.println("From account: ");
+						String source = in.readLine();
+
+						out.println("To Who: ");
+						String payee = in.readLine();
+
+						String responce = bank.processRequest(customer, request, value, source, payee);
+						out.println(responce);
+					}
+					
 					else{
 						String responce = bank.processRequest(customer, request);
 						out.println(responce);
