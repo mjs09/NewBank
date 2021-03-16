@@ -84,6 +84,18 @@ public class NewBank {
 		}
 		return "FAIL";
 	}
+	// commands from the NewBank customer are processed in this method
+	public synchronized String processRequest(CustomerID customer, String request, double value, String source, String payee) {
+		if (customers.containsKey(customer.getKey())) {
+			switch (request) {
+				case "PAY":
+					return payMoney(customer, value, source, payee);
+				default:
+					return "FAIL";
+			}
+		}
+		return "SUCCESS";
+	}
 
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
@@ -120,7 +132,32 @@ public class NewBank {
 
 		return "FAIL";
 	}
+	private String payMoney(CustomerID customer, double amount, String source, String payee) {
+		String name = payee;
+		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
+		for (Account customerAccount : accountsList) {
+			if (customerAccount.getAccountName().equals(source)) {
+				if (customerAccount.getCurrentBalance() < amount) {
+					return "FAIL: Insufficient funds in source account";
+				}
+				else {
+					double currentBalance = customerAccount.getCurrentBalance();
+					double newBalance = currentBalance - amount;
+					customerAccount.setCurrentBalance(newBalance);
+					for (Account paymentAccount : accountsList) {
+						if (payee == name) {
+							double currentBalance2 = paymentAccount.getCurrentBalance();
+							double newBalance2 = currentBalance2 + amount;
+							paymentAccount.setCurrentBalance(newBalance2);
+						}
+					}
+					return "SUCCESS";
+				}
+			}
+		}
 
+
+		return "FAIL";
 
 
 }
