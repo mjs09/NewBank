@@ -56,9 +56,17 @@ public class NewBankClientHandler extends Thread{
 						String source = in.readLine();
 						out.println("To account");
 						String target = in.readLine();
-						String responce = bank.processRequest(customer, request, amount, source, target);
+						String responce = bank.processRequest(customer, request, source, target, amount);
 						out.println(responce);
 						
+					}
+					else if (request.equals("CLOSEACCOUNT")) {
+						Scanner scan = new Scanner(System.in);
+						out.println("Account to close:");
+						String account = in.readLine();
+						String responce = bank.processRequest(customer, request, account);
+						out.println(responce);
+
 					}
 					
 					else if (request.equals("PAY")) {
