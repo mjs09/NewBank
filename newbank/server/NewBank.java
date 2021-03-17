@@ -47,11 +47,24 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request, double amount, String source, String target) {
+	public synchronized String processRequest(CustomerID customer, String request, String source, String target, double amount) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
 				case "MOVE":
 					return moveMoney(customer, amount, source, target);
+				default:
+					return "FAIL";
+			}
+		}
+		return "FAIL";
+	}
+
+	// commands from the NewBank customer are processed in this method
+	public synchronized String processRequest(CustomerID customer, String request, String account) {
+		if (customers.containsKey(customer.getKey())) {
+			switch (request) {
+				case "CLOSEACCOUNT":
+					return closeAccount(customer, account);
 				default:
 					return "FAIL";
 			}
@@ -128,10 +141,27 @@ public class NewBank {
 				}
 			}
 		}
-
-
 		return "FAIL";
 	}
+
+	private String closeAccount(CustomerID customer, String account) {
+		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
+		int index = 0;
+		for (Account a : accountsList) {
+			if (a.getAccountName().equals(account)) {
+				if (a.getCurrentBalance() != 0) {
+					return "FAIL: Account has a non-zero balance. Please use MOVE or PAY command to move or pay money into other accounts.";
+				}
+				else {
+					accountsList.remove(index);
+					return "SUCCESS";
+				}
+			}
+			index++;
+		}
+		return "FAIL: Account not found. Use SHOWMYACCOUNTS to check account name. Account names are case sensitive.";
+	}
+
 	private String payMoney(CustomerID customer, double amount, String source, String payee) {
 		String name = payee;
 		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
@@ -139,8 +169,7 @@ public class NewBank {
 			if (customerAccount.getAccountName().equals(source)) {
 				if (customerAccount.getCurrentBalance() < amount) {
 					return "FAIL: Insufficient funds in source account";
-				}
-				else {
+				} else {
 					double currentBalance = customerAccount.getCurrentBalance();
 					double newBalance = currentBalance - amount;
 					customerAccount.setCurrentBalance(newBalance);
@@ -159,5 +188,5 @@ public class NewBank {
 
 		return "FAIL";
 
-
+	}
 }
