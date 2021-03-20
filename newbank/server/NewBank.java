@@ -17,18 +17,21 @@ public class NewBank {
 
 	private void addTestData() {
 		Customer bhagy = new Customer();
+		bhagy.setPassword("1234");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		bhagy.addAccount(new Account("Savings", 10000.0));
 		bhagy.addAccount(new Account("Checking", 150.0));
 		customers.put("Bhagy", bhagy);
 
 		Customer christina = new Customer();
+		christina.setPassword("0000");
 		christina.addAccount(new Account("Main", 150.0));
 		christina.addAccount(new Account("Savings", 1500.0));
 		christina.addAccount(new Account("Checking", 250.0));
 		customers.put("Christina", christina);
 
 		Customer john = new Customer();
+		john.setPassword("9999");
 		john.addAccount(new Account("Main", 300.0));
 		john.addAccount(new Account("Savings", 3000.0));
 		john.addAccount(new Account("Checking", 250.0));
@@ -40,7 +43,7 @@ public class NewBank {
 	}
 
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if (customers.containsKey(userName)) {
+		if (customers.containsKey(userName) && customers.get(userName).getPassword().equals(password)) {
 			return new CustomerID(userName);
 		}
 		return null;
