@@ -1,10 +1,15 @@
 package newbank.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Account {
 
 	private String accountName;
 	private double openingBalance;
 	private double currentBalance;
+
+	private List<AccountMovement> movements;
 
 	public Account(String accountName, double openingBalance) {
 		this.accountName = accountName;
@@ -12,6 +17,9 @@ public class Account {
 
 		// Set starting currentBalance to openingBalance
 		this.currentBalance = this.openingBalance;
+
+		// Instantiate list
+		this.movements = new ArrayList<AccountMovement>();
 	}
 
 	public void setCurrentBalance(double currentBalance) {
@@ -24,6 +32,14 @@ public class Account {
 
 	public String getAccountName() {
 		return this.accountName;
+	}
+
+	public List<AccountMovement> getMovements() {
+		return this.movements;
+	}
+
+	public void addMovement(AccountMovement m) {
+		this.movements.add(m);
 	}
 
 	// Shows the account currentBalance

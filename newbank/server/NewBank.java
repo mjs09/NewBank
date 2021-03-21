@@ -1,7 +1,6 @@
 package newbank.server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,13 +49,14 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request, String source, String target, double amount) {
+	public synchronized String processRequest(CustomerID customer, String request, String source, String target,
+			double amount) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
-				case "MOVE":
-					return moveMoney(customer, amount, source, target);
-				default:
-					return "FAIL";
+			case "MOVE":
+				return moveMoney(customer, amount, source, target);
+			default:
+				return "FAIL";
 			}
 		}
 		return "FAIL";
@@ -66,10 +66,12 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request, String account) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
-				case "CLOSEACCOUNT":
-					return closeAccount(customer, account);
-				default:
-					return "FAIL";
+			case "CLOSEACCOUNT":
+				return closeAccount(customer, account);
+			case "SHOWACCOUNTMOVEMENTS":
+				return getAccountMovements(customer, account);
+			default:
+				return "FAIL";
 			}
 		}
 		return "FAIL";
@@ -100,14 +102,16 @@ public class NewBank {
 		}
 		return "FAIL";
 	}
+
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request, double value, String source, String payee) {
+	public synchronized String processRequest(CustomerID customer, String request, double value, String source,
+			String payee) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
-				case "PAY":
-					return payMoney(customer, value, source, payee);
-				default:
-					return "FAIL";
+			case "PAY":
+				return payMoney(customer, value, source, payee);
+			default:
+				return "FAIL";
 			}
 		}
 		return "SUCCESS";
@@ -128,16 +132,17 @@ public class NewBank {
 			if (a.getAccountName().equals(source)) {
 				if (a.getCurrentBalance() < amount) {
 					return "FAIL: Insufficient funds in source account";
-				}
-				else {
+				} else {
 					double currentBalance = a.getCurrentBalance();
 					double newBalance = currentBalance - amount;
 					a.setCurrentBalance(newBalance);
+					a.addMovement(new AccountMovement(source, target, -amount, LocalDateTime.now()));
 					for (Account a2 : accountsList) {
 						if (a2.getAccountName().equals(target)) {
 							double currentBalance2 = a2.getCurrentBalance();
 							double newBalance2 = currentBalance2 + amount;
 							a2.setCurrentBalance(newBalance2);
+							a2.addMovement(new AccountMovement(source, target, amount, LocalDateTime.now()));
 						}
 					}
 					return "SUCCESS";
@@ -154,8 +159,7 @@ public class NewBank {
 			if (a.getAccountName().equals(account)) {
 				if (a.getCurrentBalance() != 0) {
 					return "FAIL: Account has a non-zero balance. Please use MOVE or PAY command to move or pay money into other accounts.";
-				}
-				else {
+				} else {
 					accountsList.remove(index);
 					return "SUCCESS";
 				}
@@ -176,11 +180,13 @@ public class NewBank {
 					double currentBalance = customerAccount.getCurrentBalance();
 					double newBalance = currentBalance - amount;
 					customerAccount.setCurrentBalance(newBalance);
+					customerAccount.addMovement(new AccountMovement(source, payee, -amount, LocalDateTime.now()));
 					for (Account paymentAccount : accountsList) {
 						if (payee == name) {
 							double currentBalance2 = paymentAccount.getCurrentBalance();
 							double newBalance2 = currentBalance2 + amount;
 							paymentAccount.setCurrentBalance(newBalance2);
+							paymentAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
 						}
 					}
 					return "SUCCESS";
@@ -188,8 +194,24 @@ public class NewBank {
 			}
 		}
 
-
 		return "FAIL";
 
+	}
+
+	private String getAccountMovements(CustomerID customer, String accountName) {
+
+		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
+
+		String accountMov = "";
+
+		for (Account account : accountsList) {
+			if (account.getAccountName().equals(accountName)) {
+				for (AccountMovement movement : account.getMovements()) {
+					accountMov += movement.toString() + ";";
+				}
+			}
+		}
+
+		return accountMov;
 	}
 }
