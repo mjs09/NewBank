@@ -1,5 +1,6 @@
 /.idea/
 NewBank.iml
+.vscode
 
 /out
 *.class
