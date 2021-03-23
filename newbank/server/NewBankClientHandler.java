@@ -98,6 +98,23 @@ public class NewBankClientHandler extends Thread {
 							}
 
 						}
+						else if (request.equals("INTLPYMT")) {
+						out.println("Amount to pay: ");
+						String moneyString = in.readLine();
+						double value = Double.parseDouble(moneyString);
+
+						out.println("From account?: ");
+						String source = in.readLine();
+
+						out.println("To Who?: ");
+						String payee = in.readLine();
+
+						out.println("Which Currency?: ");
+						String currency = in.readLine();
+
+						String responce = bank.processRequest(customer, request, value, source, payee, currency);
+						out.println(responce);
+					}
 
 						else {
 							String responce = bank.processRequest(customer, request);

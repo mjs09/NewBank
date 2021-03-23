@@ -178,13 +178,13 @@ public class NewBank {
 					return "FAIL: Insufficient funds in source account";
 				} else {
 					double currentBalance = customerAccount.getCurrentBalance();
-					double newBalance = currentBalance - amount;
+					double newBalance = currentBalance;
 					customerAccount.setCurrentBalance(newBalance);
-					customerAccount.addMovement(new AccountMovement(source, payee, -amount, LocalDateTime.now()));
+					customerAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
 					for (Account paymentAccount : accountsList) {
 						if (payee == name) {
 							double currentBalance2 = paymentAccount.getCurrentBalance();
-							double newBalance2 = currentBalance2 + amount;
+							double newBalance2 = currentBalance2 - amount;
 							paymentAccount.setCurrentBalance(newBalance2);
 							paymentAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
 						}
@@ -214,4 +214,38 @@ public class NewBank {
 
 		return accountMov;
 	}
+	private String intlPayment(CustomerID customer, double value, String source, String payee, String currency) {
+		String name = payee;
+		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
+		for (Account customerAccount : accountsList) {
+			if (customerAccount.getAccountName().equals(source)) {
+				if (customerAccount.getCurrentBalance() < value) {
+					return "FAIL: Insufficient funds in source account";
+				} else {
+					double currentBalance = customerAccount.getCurrentBalance();
+					double newBalance = currentBalance;
+					customerAccount.setCurrentBalance(newBalance);
+					customerAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
+					for (Account paymentAccount : accountsList) {
+						if (paymentAccount.getAccountName().equals(source)) {
+							if (currency == getCurrencyType(currency)) {
+								double currentBalance2 = paymentAccount.getCurrentBalance();
+								double newBalance2 = currentBalance2 - value;
+								double currencyEquivalent = currentBalance2 * getExchangeRate(currency);
+								paymentAccount.setCurrentBalance(newBalance2);
+								paymentAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
+							} else {
+								return "FAIL: Transaction not possible";
+
+							}
+						}
+						return getCurrencyType(currency) + "\\GBP " + getExchangeRate(currency) +  " SUCCESS" ;
+					}
+				}
+			}
+
+		}
+		return "FAIL";
+	}
 }
+
