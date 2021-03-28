@@ -234,10 +234,7 @@ public class NewBank {
 								double currencyEquivalent = currentBalance2 * getExchangeRate(currency);
 								paymentAccount.setCurrentBalance(newBalance2);
 								paymentAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
-							} else {
-								return "FAIL: Transaction not possible";
-
-							}
+							} 
 						}
 						return getCurrencyType(currency) + "\\GBP " + getExchangeRate(currency) +  " SUCCESS" ;
 					}
