@@ -7,9 +7,9 @@ public class ExchangeRates {
     private Double exchangeRate;
 
 
-    public ExchangeRates() { 
-	
-	
+    public ExchangeRates() {
+
+
         ArrayList<String> currencyType = new ArrayList<>();
         currencyType.add("EUR");
         currencyType.add("USD");
@@ -17,7 +17,7 @@ public class ExchangeRates {
 
     }
 
-    public static Double getExchangeRate(String currency) { 
+    public static Double getExchangeRate(String currency) {
         Double currValue = 0.00;
 
         HashMap<String, Double> currencyName = new HashMap<String, Double>();
@@ -27,14 +27,14 @@ public class ExchangeRates {
         currencyName.put("USD", 0.99);
         currencyName.put("YUAN", 5.25);
 
-           if(currencyName.containsKey(currency)){
-                currValue = currencyName.get(currency);
-           }
-           return currValue;
+        if (currencyName.containsKey(currency)) {
+            currValue = currencyName.get(currency);
+        }
+        return currValue;
 
     }
 
-    public static String getCurrencyType(String currency) { 
+    public static String getCurrencyType(String currency) {
 
         ArrayList<String> currencyType = new ArrayList<>();
 
@@ -52,3 +52,4 @@ public class ExchangeRates {
         }
         return "Currency not Found";
     }
+}
