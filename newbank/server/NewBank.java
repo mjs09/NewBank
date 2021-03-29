@@ -96,6 +96,8 @@ public class NewBank {
 			switch (request) {
 			case "NEWACCOUNT":
 				return addAccount(customer, accountName, balance);
+			case "SETOVERDRAFT":
+				return setOverdraft(customer, accountName, balance);
 			default:
 				return "FAIL";
 			}
@@ -213,5 +215,10 @@ public class NewBank {
 		}
 
 		return accountMov;
+	}
+
+	private String setOverdraft(CustomerID customer, String accountName, Double amount){
+		customers.get(customer.getKey()).getAccountFromName(accountName).setOverdraft(amount);
+		return "SUCCESS";
 	}
 }

@@ -29,6 +29,15 @@ public class Customer {
 		return this.password;
 	}
 
+	public Account getAccountFromName(String accountName){
+		for (Account account : this.accounts) {
+			if (account.getAccountName().equals(accountName)) {
+				return account;
+			}
+		}
+		return null;
+	}
+
 	public ArrayList<Account> listAccounts() {
 		return accounts;
 	}

@@ -99,6 +99,17 @@ public class NewBankClientHandler extends Thread {
 
 						}
 
+						else if (request.equals("SETOVERDRAFT")){
+							out.println("Which account do you want to set the overdraft for?");
+							String account = in.readLine();
+
+							out.println("What overdraft amount would you like?");
+							double amount = Double.parseDouble(in.readLine());
+
+							String responce = bank.processRequest(customer, request, account, amount);
+							out.println(responce);
+						}
+
 						else {
 							String responce = bank.processRequest(customer, request);
 							out.println(responce);
