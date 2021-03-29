@@ -96,6 +96,8 @@ public class NewBank {
 			switch (request) {
 			case "NEWACCOUNT":
 				return addAccount(customer, accountName, balance);
+			case "SETOVERDRAFT":
+				return setOverdraft(customer, accountName, balance);
 			default:
 				return "FAIL";
 			}
@@ -214,7 +216,15 @@ public class NewBank {
 
 		return accountMov;
 	}
-	private String intlPayment(CustomerID customer, double value, String source, String payee, String currency) {
+
+
+	private String setOverdraft(CustomerID customer, String accountName, Double amount){
+		customers.get(customer.getKey()).getAccountFromName(accountName).setOverdraft(amount);
+		return "SUCCESS";
+
+	}
+  
+  	private String intlPayment(CustomerID customer, double value, String source, String payee, String currency) {
 		String name = payee;
 		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
 		for (Account customerAccount : accountsList) {
@@ -243,6 +253,6 @@ public class NewBank {
 
 		}
 		return "FAIL";
-	}
+  
 }
 
