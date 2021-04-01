@@ -138,13 +138,14 @@ public class NewBank {
 					double currentBalance = a.getCurrentBalance();
 					double newBalance = currentBalance - amount;
 					a.setCurrentBalance(newBalance);
-					a.addMovement(new AccountMovement(source, target, -amount, LocalDateTime.now()));
+					a.addMovement(new AccountMovement("Transfer to account " + target, -amount, LocalDateTime.now()));
 					for (Account a2 : accountsList) {
 						if (a2.getAccountName().equals(target)) {
 							double currentBalance2 = a2.getCurrentBalance();
 							double newBalance2 = currentBalance2 + amount;
 							a2.setCurrentBalance(newBalance2);
-							a2.addMovement(new AccountMovement(source, target, amount, LocalDateTime.now()));
+							a2.addMovement(new AccountMovement("Transfer from account " + target, amount,
+									LocalDateTime.now()));
 						}
 					}
 					return "SUCCESS";
@@ -182,13 +183,15 @@ public class NewBank {
 					double currentBalance = customerAccount.getCurrentBalance();
 					double newBalance = currentBalance - amount;
 					customerAccount.setCurrentBalance(newBalance);
-					customerAccount.addMovement(new AccountMovement(source, payee, -amount, LocalDateTime.now()));
+					customerAccount
+							.addMovement(new AccountMovement("Payment to " + payee, -amount, LocalDateTime.now()));
 					for (Account paymentAccount : accountsList) {
 						if (payee == name) {
 							double currentBalance2 = paymentAccount.getCurrentBalance();
 							double newBalance2 = currentBalance2 + amount;
 							paymentAccount.setCurrentBalance(newBalance2);
-							paymentAccount.addMovement(new AccountMovement(source, payee, amount, LocalDateTime.now()));
+							paymentAccount.addMovement(
+									new AccountMovement("Paymento from" + payee, amount, LocalDateTime.now()));
 						}
 					}
 					return "SUCCESS";
@@ -217,7 +220,7 @@ public class NewBank {
 		return accountMov;
 	}
 
-	private String setOverdraft(CustomerID customer, String accountName, Double amount){
+	private String setOverdraft(CustomerID customer, String accountName, Double amount) {
 		customers.get(customer.getKey()).getAccountFromName(accountName).setOverdraft(amount);
 		return "SUCCESS";
 	}
