@@ -144,7 +144,7 @@ public class NewBank {
 							double currentBalance2 = a2.getCurrentBalance();
 							double newBalance2 = currentBalance2 + amount;
 							a2.setCurrentBalance(newBalance2);
-							a2.addMovement(new AccountMovement("Transfer from account " + target, amount,
+							a2.addMovement(new AccountMovement("Transfer from account " + source, amount,
 									LocalDateTime.now()));
 						}
 					}
