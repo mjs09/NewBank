@@ -41,7 +41,12 @@ public class NewBankClientHandler extends Thread {
 						String request = in.readLine();
 						System.out.println("Request from " + customer.getKey());
 
-						if (request.equals("NEWACCOUNT")) {
+						if (request.equals("LOGOUT")){
+							out.println("Logging out...");
+							break;
+						}
+
+						else if (request.equals("NEWACCOUNT")) {
 							out.println("Account Name:");
 							String accountName = in.readLine();
 							out.println("Opening Balance");
@@ -77,10 +82,13 @@ public class NewBankClientHandler extends Thread {
 							out.println("From account: ");
 							String source = in.readLine();
 
-							out.println("To Who: ");
-							String payee = in.readLine();
+							out.println("To payee: ");
+							CustomerID payee = new CustomerID(in.readLine());
 
-							String responce = bank.processRequest(customer, request, value, source, payee);
+							out.println("To payee account: ");
+							String payeeAccount = in.readLine();
+
+							String responce = bank.processRequest(customer, request, value, source, payee, payeeAccount);
 							out.println(responce);
 						}
 
