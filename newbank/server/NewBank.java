@@ -107,11 +107,11 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request, double value, String source,
-			String payee) {
+			CustomerID payee, String payeeAccount) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
 			case "PAY":
-				return payMoney(customer, value, source, payee);
+				return payMoney(customer, value, source, payee, payeeAccount);
 			default:
 				return "FAIL";
 			}
@@ -172,33 +172,25 @@ public class NewBank {
 		return "FAIL: Account not found. Use SHOWMYACCOUNTS to check account name. Account names are case sensitive.";
 	}
 
-	private String payMoney(CustomerID customer, double amount, String source, String payee) {
-		String name = payee;
+	private String payMoney(CustomerID customer, double amount, String source, CustomerID payee, String accountName) {
 		ArrayList<Account> accountsList = customers.get(customer.getKey()).listAccounts();
 		for (Account customerAccount : accountsList) {
 			if (customerAccount.getAccountName().equals(source)) {
 				if (customerAccount.getCurrentBalance() < amount) {
 					return "FAIL: Insufficient funds in source account";
 				} else {
-					double currentBalance = customerAccount.getCurrentBalance();
-					double newBalance = currentBalance - amount;
-					customerAccount.setCurrentBalance(newBalance);
-					customerAccount
-							.addMovement(new AccountMovement("Payment to " + payee, -amount, LocalDateTime.now()));
-					for (Account paymentAccount : accountsList) {
-						if (payee == name) {
-							double currentBalance2 = paymentAccount.getCurrentBalance();
-							double newBalance2 = currentBalance2 + amount;
-							paymentAccount.setCurrentBalance(newBalance2);
+					customerAccount.setCurrentBalance(customerAccount.getCurrentBalance()-amount);
+					customerAccount.addMovement(new AccountMovement("Payment to " + payee.getKey() + "(" + accountName + ")", -amount, LocalDateTime.now()));
+					ArrayList<Account> PayeeAccountsList = customers.get(payee.getKey()).listAccounts();
+					for (Account paymentAccount : PayeeAccountsList) {
+							paymentAccount.setCurrentBalance(paymentAccount.getCurrentBalance() + amount);
 							paymentAccount.addMovement(
-									new AccountMovement("Paymento from" + payee, amount, LocalDateTime.now()));
+									new AccountMovement("Payment from " + customer.getKey(), amount, LocalDateTime.now()));
 						}
 					}
 					return "SUCCESS";
 				}
 			}
-		}
-
 		return "FAIL";
 
 	}
